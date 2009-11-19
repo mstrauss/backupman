@@ -1,0 +1,60 @@
+############################################################################
+
+# = Global settings
+# These settings are valid for all latter backup definitions
+
+# the default destination directory; if you do not set this it defaults to
+# /var/backups/backup_man
+DESTDIR = "/Users/srm/Documents/Backups"
+
+# where the lockfiles go (defaults to /var/lock/backup_man/_backupname_);
+# backup_man ensures, that each backup task can only run once at a time and
+# uses lockfiles for this
+LOCKDIR = "#{DESTDIR}"
+
+# ssh_app defines the call to ssh with command line parameters, e.g. if you
+# want to use a special identity file; SSH_APP defaults to 'ssh'
+SSH_APP='ssh -i /Users/srm/.ssh/id_rsa'
+
+############################################################################
+
+# = Helper variables
+# These are just used in this file to ease the backup definitions
+
+dirs_to_backup = [ "/etc", "/home", "/root", "/srv", "/var/backups",
+"/var/cache/git", "/var/log", "/var/mail", "/var/rails", "/var/svn",
+"/var/www" ]
+
+############################################################################
+
+# = Backup defintions
+# Currently there are these types of backups:
+# * Tar - as the name says; simple tar of a bunch of directories into a tgz
+# * Rsync - rsync of a bunch of directories
+# * Mysql - does a simple mysqldump of all databases
+#       
+# == Common settings
+# * backup: an array of directories to backup
+# * to: the destination directory on the local machine (defaults to DESTDIR)
+# * onlyif: specify a condition (as Ruby code) which is checked before the
+#   actual backup run; it must evaluate true to have the backup run - see the
+#   homepage for details on how to write conditions
+#
+Tar.new( 'akeso' ) do |b|
+  b.backup  dirs_to_backup
+  # in this example, this job only runs on saturdays and only if the backup
+  # does not exist already
+  b.onlyif  'Date.today.cwday == 6 && !exists?'
+end
+
+Rsync.new( 'akeso' ) do |b|
+  b.backup  dirs_to_backup
+  # rsync backups go to _DESTDIR_/rsync per default; to override use the "to"
+  # setting: 
+  ## b.to '/var/backup/custom-rsync-destination'
+end
+
+Mysql.new( 'akeso' ) do |b|
+  # in this case, we simply do not run the backup if we already have one
+  b.onlyif    '!exists?'
+end

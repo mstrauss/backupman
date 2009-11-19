@@ -1,18 +1,85 @@
 = BackupMan
 
-Description goes here.
+* Homepage: http://backupman.rubyforge.org/
+* Source code (development release): http://github.com/oowoo/backup_man
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+== DESCRIPTION:
 
-== Copyright
+This program implements pull-over-SSH backups. It's usage scenario is to
+backup servers in a DMZ or on the Internet without special backup software
+installed. All you need is SSH access and that there is a user account which
+has rights necessary to run your backup definitions there. You also need to
+implement certificate-based login.
 
-Copyright (c) 2009 Markus Strauss. See LICENSE for details.
+== FEATURES/PROBLEMS:
+
+Currently these types of backups are configurable:
+
+* tar
+* rsync
+* mysqldump
+
+== SYNOPSIS:
+
+To run a fully configured backup configured in <tt>/etc/backup_man/somehost</tt> run
+
+  backup_man somehost
+  
+To run a backup with custom log destination (default is <tt>/var/log/backup_man.log</tt>) and with a custom configuration file path use
+
+  backup_man -l /full/path/to/logfile /full/path/to/configfile
+  
+Full synopsis:
+
+  Usage: backup_man [options] {configname | configpath}
+
+  Options are:
+      -l, --logpath=PATH               Path to the log file.
+                                       This can NOT be configured in the config file.
+                                       Default: /var/log/backup_man.log
+      -d, --debug                      Debug mode.
+                                       Much output on screen and in the log file.
+      -h, --help                       Show this help message.
+  
+
+== REQUIREMENTS:
+
+* gems: log4r
+
+== INSTALL & QUICKSTART:
+
+* <tt>sudo gem install backup_man</tt>
+* run <tt>sudo backup_man setup</tt>; this happens:
+  * creates the user _backup_man_
+  * creates these directories/files and gives ownership to _backup_man_
+    * /var/backups/backup_man [Dir]
+    * /var/lock/backup_man [Dir]
+    * /var/log/backup_man.log [File]
+  * creates <tt>/etc/backup_man/</tt> and places the example config file there
+* rename the example configuration file to _yourhostname_ (do not use any file extension)
+* edit this file and configure one or more backup definitions
+* run <tt>sudo -i -u backup_man</tt>
+* create an ssh key for backup_man by calling <tt>ssh-keygen</tt>
+  * save the key files in the default location
+  * do not use a passphrase [you want BackupMan to be able to access the remote machines without user interaction]
+* copy the new key to the authorized_keys file on the remote host by calling
+  <tt>ssh-copy-id user@machine</tt>; replace _user_ and _machine_ accordingly;
+  the remote user must have all necessary rights to perform the required
+  backup tasks; for testing purposes use _root_
+* to test the setup, run <tt>sudo -H -u backup_man backup_man _yourhostname_ -d</tt> and watch the output
+  * -d enables debug mode
+  * _yourhostname_ should match the file name you have chosen previously
+* if everything runs well, do an <tt>sudo -u backup_man crontab -e</tt> and these lines, for example:
+   MAILTO=your@mail.address
+   0 */4 * * * backup_man yourhostname -d
+   # (this backup job runs every four hours)
+
+* if everything goes well, remove the <tt>-d</tt> which disables debug mode
+  and BackupMan just produces output in cases of warnings/errors and your
+  mailbox remains clean
+
+== LICENSE:
+
+Author:: Markus Strauss (mailto:markus@itstrauss.eu)
+Copyright:: Copyright (c)2009 Markus Strauss
+License:: GPLv3 (http://www.gnu.org/licenses/gpl-3.0.txt)

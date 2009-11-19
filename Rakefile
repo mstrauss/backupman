@@ -5,14 +5,15 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "BackupMan"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{A tool for system administrators to easily configure pull-over-SSH backups.}
+    gem.description = %Q{A tool for system administrators to easily configure pull-over-SSH backups. Install this gem on your backup server. Configure your backups definitions in /etc/backup_man and run backup_man from cron to securely pull your data over SSH.}
     gem.email = "Markus@ITstrauss.eu"
     gem.homepage = "http://github.com/oowoo/BackupMan"
     gem.authors = ["Markus Strauss"]
     gem.rubyforge_project = "BackupMan"
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency "yard", ">= 0"
+    gem.add_dependency "log4r", ">= 1.1.2"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::RubyforgeTasks.new do |rubyforge|
