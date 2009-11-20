@@ -16,6 +16,7 @@ begin
     gem.add_dependency "log4r", ">= 1.1.2"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
+  Jeweler::GemcutterTasks.new
   Jeweler::RubyforgeTasks.new do |rubyforge|
     rubyforge.doc_task = "yardoc"
     # rubyforge.doc_task = "rdoc"
