@@ -18,6 +18,7 @@ begin
   end
   Jeweler::RubyforgeTasks.new do |rubyforge|
     rubyforge.doc_task = "yardoc"
+    # rubyforge.doc_task = "rdoc"
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
@@ -39,9 +40,19 @@ task :spec => :check_dependencies
 
 task :default => :spec
 
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "BackupMan #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
 begin
   require 'yard'
-  YARD::Rake::YardocTask.new
+  YARD::Rake::YardocTask.new( :yardoc )
 rescue LoadError
   task :yardoc do
     abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
