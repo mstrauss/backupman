@@ -22,7 +22,7 @@ module BackupMan
 
       parser = OptionParser.new do |opts|
         opts.banner = <<-BANNER.gsub(/^          /,'')
-          BackupMan handles your SSH-pull-style backups. Call this program regularily via cron in the security space of your favorite user account. This account 
+          BackupMan handles your SSH-pull-style backups. Call it via cron or any other scheduler.
 
           Usage: #{File.basename($0)} [options] {configname | configpath}
 
@@ -45,7 +45,14 @@ module BackupMan
       end
 
       # doing our stuff here
-      BackupMan.instance.logfile = options[:logpath]
+      
+      # first we check if our logfile is writeable; if not, we give a warning
+      logfile = Pathname.new( options[:logpath] )
+      if (logfile.exist? && logfile.writable?) || logfile.parent.writable?
+        BackupMan.instance.logfile = logfile.to_s
+      else
+        Log.instance.warn( "Log file is not writeable: #{logfile}.")
+      end
       
       # root-warning
       Log.instance.warn( "Please do not run this program as root.") if `id -u`.strip == '0'

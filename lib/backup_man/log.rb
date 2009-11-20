@@ -31,10 +31,12 @@ module BackupMan
       stderr_outputter.level = WARN
       @logger.add stderr_outputter
 
-      file_format = PatternFormatter.new(:pattern => "[ %d ] %l\t %m")
-      file_outputter = FileOutputter.new('fileOutputter', :filename => BackupMan.instance.logfile, :trunc => false, :formatter => file_format )
-      file_outputter.level = DEBUG
-      @logger.add file_outputter
+      if filename = BackupMan.instance.logfile
+        file_format = PatternFormatter.new(:pattern => "[ %d ] %l\t %m")
+        file_outputter = FileOutputter.new('fileOutputter', :filename => filename, :trunc => false, :formatter => file_format )
+        file_outputter.level = DEBUG
+        @logger.add file_outputter
+      end
     end
     
     def enable_debugmode
