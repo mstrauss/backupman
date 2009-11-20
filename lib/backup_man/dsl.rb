@@ -29,7 +29,6 @@ module BackupMan
       def register_dsl( name, var )
         @dsl_methods = [] if @dsl_methods.nil?
         @dsl_methods << [name, var]
-        puts "#{self} #{self.dsl_methods.join ","}"
       end
       
       # returns an array of all dsl methods of this and all superclasses

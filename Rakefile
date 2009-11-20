@@ -10,7 +10,7 @@ begin
     gem.email = "Markus@ITstrauss.eu"
     gem.homepage = "http://github.com/oowoo/BackupMan"
     gem.authors = ["Markus Strauss"]
-    gem.rubyforge_project = "BackupMan"
+    gem.rubyforge_project = "backupman"
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency "yard", ">= 0"
     gem.add_dependency "log4r", ">= 1.1.2"
