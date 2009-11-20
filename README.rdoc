@@ -1,23 +1,34 @@
 = BackupMan
 
-* Homepage: http://backupman.rubyforge.org/
-* Source code (development release): http://github.com/oowoo/backup_man
+* Homepage: http://github.com/oowoo/backupman
 
 == DESCRIPTION:
 
-This program implements pull-over-SSH backups. It's usage scenario is to
-backup servers in a DMZ or on the Internet without special backup software
-installed. All you need is SSH access and that there is a user account which
-has rights necessary to run your backup definitions there. You also need to
-implement certificate-based login.
+A tool for system administrators to easily configure pull-over-SSH backups.
+Install it on your backup server and pull your backups over SSH from there.
+
+== BACKGROUND
+
+When you have servers on the Internet or in a DMZ they are kind of "untrusted"
+because they are vulnerable to become hacked/cracked. It is therefore a best
+practice to <b>pull</b> backups from there instead of letting these servers
+push their data to the backup servers. Advantage: When doing SSH-pull you do
+not have to store any kind of authentication information on your "untrusted"
+remote servers.
 
 == FEATURES/PROBLEMS:
 
 Currently these types of backups are configurable:
 
-* tar
-* rsync
-* mysqldump
+* tar - the tar becomes compressed on the source and is <b>streamed</b> over SSH to
+  the backup server; no tar files are created on the source side.
+
+* rsync - changes on the source side become synchronized in a very efficient
+  way to a copy on the backup server; you get a 1:1 copy of your data on the
+  backup server
+
+* mysqldump - this simply does a full dump of all your databases, compresses
+  it and streams it over to the backup server
 
 == SYNOPSIS:
 
@@ -25,7 +36,9 @@ To run a fully configured backup configured in <tt>/etc/backup_man/somehost</tt>
 
   backup_man somehost
   
-To run a backup with custom log destination (default is <tt>/var/log/backup_man.log</tt>) and with a custom configuration file path use
+To run a backup with custom log destination (default is
+<tt>/var/log/backup_man.log</tt>) and with a custom configuration file path
+use
 
   backup_man -l /full/path/to/logfile /full/path/to/configfile
   
@@ -46,37 +59,77 @@ Full synopsis:
 
 * gems: log4r
 
-== INSTALL & QUICKSTART:
+== INSTALL / CONFIGURATION ON THE BACKUP SERVER:
 
 * <tt>sudo gem install backup_man</tt>
-* run <tt>sudo backup_man setup</tt>; this happens:
-  * creates the user _backup_man_
-  * creates these directories/files and gives ownership to _backup_man_
-    * /var/backups/backup_man [Dir]
-    * /var/lock/backup_man [Dir]
-    * /var/log/backup_man.log [File]
-  * creates <tt>/etc/backup_man/</tt> and places the example config file there
-* rename the example configuration file to _yourhostname_ (do not use any file extension)
-* edit this file and configure one or more backup definitions
-* run <tt>sudo -i -u backup_man</tt>
-* create an ssh key for backup_man by calling <tt>ssh-keygen</tt>
-  * save the key files in the default location
-  * do not use a passphrase [you want BackupMan to be able to access the remote machines without user interaction]
-* copy the new key to the authorized_keys file on the remote host by calling
-  <tt>ssh-copy-id user@machine</tt>; replace _user_ and _machine_ accordingly;
-  the remote user must have all necessary rights to perform the required
-  backup tasks; for testing purposes use _root_
-* to test the setup, run <tt>sudo -H -u backup_man backup_man _yourhostname_ -d</tt> and watch the output
-  * -d enables debug mode
-  * _yourhostname_ should match the file name you have chosen previously
-* if everything runs well, do an <tt>sudo -u backup_man crontab -e</tt> and these lines, for example:
-   MAILTO=your@mail.address
-   0 */4 * * * backup_man yourhostname -d
-   # (this backup job runs every four hours)
+* remove the password from your ssh private key, e.g. do +ssh-keygen -p+
+* create an configuration file in <tt>/etc/backup_man</tt>, copy this example and adapt to your needs:
 
-* if everything goes well, remove the <tt>-d</tt> which disables debug mode
-  and BackupMan just produces output in cases of warnings/errors and your
-  mailbox remains clean
+   ############################################################################
+   
+   # = Global settings
+   # These settings are valid for all latter backup definitions
+   
+   # the default destination directory; if you do not set this it defaults to
+   # /var/backups/backup_man
+   DESTDIR = "/Users/srm/Documents/Backups"
+   
+   # where the lockfiles go (defaults to /var/lock/backup_man/_backupname_);
+   # backup_man ensures, that each backup task can only run once at a time and
+   # uses lockfiles for this
+   LOCKDIR = "#{DESTDIR}"
+   
+   # ssh_app defines the call to ssh with command line parameters, e.g. if you
+   # want to use a special identity file; SSH_APP defaults to 'ssh'
+   SSH_APP='ssh -i /Users/srm/.ssh/id_rsa'
+   
+   ############################################################################
+   
+   # = Helper variables
+   # These are just used in this file to ease the backup definitions
+   
+   dirs_to_backup = [ "/etc", "/home", "/root", "/srv", "/var/backups",
+   "/var/cache/git", "/var/log", "/var/mail", "/var/rails", "/var/svn",
+   "/var/www" ]
+   
+   ############################################################################
+   
+   # = Backup defintions
+   # Currently there are these types of backups:
+   # * Tar - as the name says; simple tar of a bunch of directories into a tgz
+   # * Rsync - rsync of a bunch of directories
+   # * Mysql - does a simple mysqldump of all databases
+   #       
+   # == Common settings
+   # * backup: an array of directories to backup
+   # * to: the destination directory on the local machine (defaults to DESTDIR)
+   # * onlyif: specify a condition (as Ruby code) which is checked before the
+   #   actual backup run; it must evaluate true to have the backup run - see the
+   #   homepage for details on how to write conditions
+   #
+   Tar.new( 'akeso' ) do |b|
+     b.backup  dirs_to_backup
+     # in this example, this job only runs on saturdays and only if the backup
+     # does not exist already
+     b.onlyif  'Date.today.cwday == 6 && !exists?'
+   end
+   
+   Rsync.new( 'akeso' ) do |b|
+     b.backup  dirs_to_backup
+     # rsync backups go to _DESTDIR_/rsync per default; to override use the "to"
+     # setting: 
+     ## b.to '/var/backup/custom-rsync-destination'
+   end
+   
+   Mysql.new( 'akeso' ) do |b|
+     # in this case, we simply do not run the backup if we already have one
+     b.onlyif    '!exists?'
+   end
+
+
+== CONFIGURATION TASKS ON THE REMOTES
+
+* configure passwordless ssh login via certificates, e.g. do a +ssh-copy-id user@remotehostname+
 
 == LICENSE:
 

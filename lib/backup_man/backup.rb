@@ -7,6 +7,7 @@ module BackupMan
     Log.instance.info( "Finished #{self}." )
   end
 
+  # we wanna log when the program ends
   at_exit { self.log_end_of_operation }
 
 
@@ -20,11 +21,14 @@ module BackupMan
     # where shall our backup data go (directory path)
     attr_reader   :backup_directory
     
-    # by the way, what machine do we backup
-    attr_accessor :user, :host
+    # user name of the remote machine (defaults to 'root')
+    attr_accessor :user
+    
+    # hostname of the remote machine (defaults to job definition name)
+    attr_accessor :host
     
     # DSL for conditional execution
-    self.extend DSL
+    include DSL
     
     def_dsl :onlyif
     def_dsl :backup, :data_sources
@@ -44,6 +48,8 @@ module BackupMan
       @host = @name unless @host
     end
 
+    # yields the block which comes from the DSL configuration file; also
+    # registers the new backup configuration with {BackupMan}
     def initialize( name )
       @name = name      
       yield(self) if block_given?
@@ -55,10 +61,10 @@ module BackupMan
     def run
       log_begin_of_run
       set_defaults
+      debug_log_dsl_info
       onlyif = eval( @onlyif )
       Log.instance.debug( "onlyif = { #{@onlyif} } evaluates #{onlyif}" )
       if onlyif
-        # Log.instance.warn( "#{self}: No data sources given.") unless @data_sources && !@data_sources.empty?
         unless @backup_directory
           Log.instance.error( "#{self}: No backup directory. Don't know where to store all this stuff.")
         else
@@ -71,6 +77,7 @@ module BackupMan
       log_end_of_run
     end
     
+    # @return [String]
     def to_s
       "#{self.class} #{self.name}"
     end
@@ -79,19 +86,22 @@ module BackupMan
     
     private
     
-    # this one must be overridden
+    # @abstract override this to implement the actual backup commands
     def _run
       throw "Hey. Cannot run just 'Backup'."
     end
     
+    # not used acutally
     def log_begin_of_run
       Log.instance.info( "Starting #{self.class} run for #{@name}." )
     end
     
+    # simply logs that the program terminates
     def log_end_of_run
       Log.instance.info( "Finished #{self.class} run for #{@name}." )
     end
 
+    # @return [String] the ssh command string including user@host
     def ssh_connect_cmd
       "#{BackupMan.instance.ssh_app} #{@user}@#{@host}"  
     end
