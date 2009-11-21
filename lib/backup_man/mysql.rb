@@ -6,9 +6,11 @@ module BackupMan
 
     # we need a name for our backup-file (DSL)
     def_dsl :filename
+    def_dsl_required :filename
     
     # options for the mysqldump run (DSL)
     def_dsl :options
+    def_dsl_required :options
 
     def set_defaults
       super

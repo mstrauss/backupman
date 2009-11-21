@@ -5,8 +5,13 @@ require 'backup_man/dsl'
 module BackupMan
   class Tar < Backup
 
+    def_dsl_required :backup
+    
     def_dsl :filename
+    def_dsl_required :filename
+    
     def_dsl :options
+    def_dsl_required :options
     
     def set_defaults
       super

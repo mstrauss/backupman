@@ -5,7 +5,10 @@ module BackupMan
   class Rsync < Backup
 
     # options for the rsync run (DSL)
+    def_dsl_required :backup
+    
     def_dsl :options
+    def_dsl_required :options
 
     def set_defaults
       @backup_directory = "#{BackupMan.instance.destdir}/#{@name}/rsync" unless @backup_directory

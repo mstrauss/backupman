@@ -85,7 +85,13 @@ module BackupMan
         # get and evaluate the config file; errors in the config file may be
         # difficult to debug, so be careful
         Log.debug( "Reading file '#{config_filepath}'.")
-        eval( File.read( config_filepath ) )
+        
+        begin
+          eval( File.read( config_filepath ) )
+        rescue NoMethodError
+          Log.fatal( $! )
+          exit 3
+        end
 
         # configure global defaults
         BackupMan.instance.set_default( :destdir, '/var/backups/backup_man')

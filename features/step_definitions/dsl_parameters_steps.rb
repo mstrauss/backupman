@@ -45,5 +45,20 @@ end
 
 Then /^the result should be error$/ do
   @output.should_not == ""
+  # @exit_code.should_not == 0
+end
+
+Then /^the result should be fatal$/ do
+  @output.should_not == ""
+  @exit_code.should_not == 0
+end
+
+Then /^the result should be error "([^\"]*)"$/ do |error|
+  @output.should include error
+  # @exit_code.should_not == 0
+end
+
+Then /^the result should be fatal "([^\"]*)"$/ do |error|
+  @output.should include error
   @exit_code.should_not == 0
 end

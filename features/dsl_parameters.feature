@@ -14,11 +14,11 @@ Feature: The DSL supports various parameters
       | Rsync | onlyif, backup, to, user, host,           options | ok     |
     
     Scenarios: full set, but invalid parameters are present
-      | task  | parameters        | result |
-      | Tar   | onlyif, backup, to, user, host, filename, options, invalid_parameter | error  |
-      | Mysql | onlyif, backup, to, user, host, filename, options, invalid_parameter | error  |
-      | Rsync | onlyif, backup, to, user, host,           options, invalid_parameter | error  |
-  
+      | task  | parameters                                                           | result                                       |
+      | Tar   | onlyif, backup, to, user, host, filename, options, invalid_parameter | fatal "undefined method `invalid_parameter'" |
+      | Mysql | onlyif, backup, to, user, host, filename, options, invalid_parameter | fatal "undefined method `invalid_parameter'" |
+      | Rsync | onlyif, backup, to, user, host,           options, invalid_parameter | fatal "undefined method `invalid_parameter'" |
+   
     Scenarios: minimal set, all required parameters are provided
       | task  | parameters  | result |
       | Tar   | backup      | ok     |
@@ -26,7 +26,7 @@ Feature: The DSL supports various parameters
       | Rsync | backup      | ok     |
   
     Scenarios: one required parameter is missing
-      | task  | parameters                                | result |
-      | Tar   | onlyif, to, user, host, filename, options | error  |
-      | Rsync | onlyif, to, user, host, options           | error  |
+      | task  | parameters                                | result                                          |
+      | Tar   | onlyif, to, user, host, filename, options | error "A required parameter is missing: backup" |
+      | Rsync | onlyif, to, user, host, options           | error "A required parameter is missing: backup" |
   
