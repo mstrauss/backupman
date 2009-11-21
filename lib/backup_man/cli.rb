@@ -56,21 +56,21 @@ module BackupMan
       if (logfile.exist? && logfile.writable?) || logfile.parent.writable?
         BackupMan.instance.logfile = logfile.to_s
       else
-        Log.instance.warn( "Log file is not writeable: #{logfile}.")
+        Log.warn( "Log file is not writeable: #{logfile}.")
       end
       
       # root-warning
-      Log.instance.warn( "Please do not run this program as root.") if `id -u`.strip == '0'
+      Log.warn( "Please do not run this program as root.") if `id -u`.strip == '0'
 
       # reconfigure our Logger for debugging if necessary
       if options[:debug]
-        Log.instance.enable_debugmode
-        Log.instance.debug( "Debugging mode enabled.")
+        Log.enable_debugmode
+        Log.debug( "Debugging mode enabled.")
       end
       
 
       unless ARGV[0]
-        Log.instance.fatal( "No config file given." )
+        Log.fatal( "No config file given." )
         stdout.puts parser
         exit 1
       else
@@ -78,13 +78,13 @@ module BackupMan
         config_filepath = Pathname.new "/etc/backup_man/#{config_filepath}" unless config_filepath.file?
         
         unless config_filepath.file?
-          Log.instance.fatal( "Config file not found [#{config_filepath}].")
+          Log.fatal( "Config file not found [#{config_filepath}].")
           exit 2
         end
 
         # get and evaluate the config file; errors in the config file may be
         # difficult to debug, so be careful
-        Log.instance.debug( "Reading file '#{config_filepath}'.")
+        Log.debug( "Reading file '#{config_filepath}'.")
         eval( File.read( config_filepath ) )
 
         # configure global defaults
@@ -92,10 +92,10 @@ module BackupMan
         BackupMan.instance.set_default( :lockdir, '/var/lock/backup_man')
         BackupMan.instance.set_default( :ssh_app, 'ssh')
         
-        Log.instance.debug( "Global settings:")
-        Log.instance.debug( "  DESTDIR = #{BackupMan.instance.destdir}")
-        Log.instance.debug( "  LOCKDIR = #{BackupMan.instance.lockdir}")
-        Log.instance.debug( "  SSH_APP = #{BackupMan.instance.ssh_app}")
+        Log.debug( "Global settings:")
+        Log.debug( "  DESTDIR = #{BackupMan.instance.destdir}")
+        Log.debug( "  LOCKDIR = #{BackupMan.instance.lockdir}")
+        Log.debug( "  SSH_APP = #{BackupMan.instance.ssh_app}")
 
         # run the whole thing
         BackupMan.instance.run

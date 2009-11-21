@@ -4,7 +4,7 @@ require 'backup_man/dsl'
 module BackupMan
 
   def self.log_end_of_operation
-    Log.instance.info( "Finished #{self}." )
+    Log.info( "Finished #{self}." )
   end
 
   # we wanna log when the program ends
@@ -63,16 +63,16 @@ module BackupMan
       set_defaults
       debug_log_dsl_info
       onlyif = eval( @onlyif )
-      Log.instance.debug( "onlyif = { #{@onlyif} } evaluates #{onlyif}" )
+      Log.debug( "onlyif = { #{@onlyif} } evaluates #{onlyif}" )
       if onlyif
         unless @backup_directory
-          Log.instance.error( "#{self}: No backup directory. Don't know where to store all this stuff.")
+          Log.error( "#{self}: No backup directory. Don't know where to store all this stuff.")
         else
           FileUtils.mkdir_p @backup_directory
           _run
         end
       else
-        Log.instance.info( "#{self}: Preconditions for backup run not fulfilled.")
+        Log.info( "#{self}: Preconditions for backup run not fulfilled.")
       end
       log_end_of_run
     end
@@ -93,12 +93,12 @@ module BackupMan
     
     # not used acutally
     def log_begin_of_run
-      Log.instance.info( "Starting #{self.class} run for #{@name}." )
+      Log.info( "Starting #{self.class} run for #{@name}." )
     end
     
     # simply logs that the program terminates
     def log_end_of_run
-      Log.instance.info( "Finished #{self.class} run for #{@name}." )
+      Log.info( "Finished #{self.class} run for #{@name}." )
     end
 
     # @return [String] the ssh command string including user@host

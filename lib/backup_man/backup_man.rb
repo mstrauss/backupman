@@ -22,7 +22,7 @@ module BackupMan
         begin
           backup.run
         rescue Interrupt
-          Log.instance.warn( "Interrupt: Cancelling remaining operations.")
+          Log.warn( "Interrupt: Cancelling remaining operations.")
           return
         end
       end        

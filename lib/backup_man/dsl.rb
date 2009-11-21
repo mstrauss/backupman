@@ -9,9 +9,9 @@ module BackupMan
     end
     
     def debug_log_dsl_info
-      Log.instance.debug( "Job settings:")
+      Log.debug( "Job settings:")
       self.class.dsl_methods.each do |method, var|
-        Log.instance.debug( "  #{method} = #{self.instance_variable_get("@#{var}")}" )
+        Log.debug( "  #{method} = #{self.instance_variable_get("@#{var}")}" )
       end
     end
     

@@ -39,10 +39,19 @@ module BackupMan
       end
     end
     
+    # globally enable debugmode for all outputters
     def enable_debugmode
       Log4r::Outputter.each_outputter { |outputter| outputter.level = DEBUG }
     end
-
+    
+    # we send all missing methods to our single logger instance
+    def self.method_missing(name, *args)
+      unless args.empty?
+        self.instance.send( name, args )
+      else
+        self.instance.send( name )
+      end
+    end
   end
 
 end

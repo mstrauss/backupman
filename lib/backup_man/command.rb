@@ -37,16 +37,16 @@ module BackupMan
       unless locked?
         lock
         begin
-          Log.instance.info( "#{self}: Running.")
+          Log.info( "#{self}: Running.")
           print `#{cmd}` unless BackupMan.instance.testing
         rescue Interrupt
-          Log.instance.warn( "#{self}: Operation interrupted.")
+          Log.warn( "#{self}: Operation interrupted.")
           raise
         ensure
           unlock
         end
       else
-        Log.instance.warn( "Command already running: #{self}." )
+        Log.warn( "Command already running: #{self}." )
       end
     end
 
@@ -54,19 +54,19 @@ module BackupMan
     private
 
     def lock
-      Log.instance.debug( "Locking command " + self.cmd )
+      Log.debug( "Locking command " + self.cmd )
       unless locked?
         f = File.new( self.lockfile, "w" )
         # FIXME: command output shall go into the correct logging lvl (eg ERROR)
         f.write(self.cmd)
         f.close
       else
-        Log.instance.info( "Lockfile exists: " + lockfile )
+        Log.info( "Lockfile exists: " + lockfile )
       end
     end
 
     def unlock
-      Log.instance.debug( "Unlocking command " + self.cmd )
+      Log.debug( "Unlocking command " + self.cmd )
       FileUtils.remove_file( self.lockfile )
     end
 
