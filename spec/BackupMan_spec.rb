@@ -16,7 +16,7 @@ module BackupMan
         argv = ["-l", "/tmp/does/not/exist.log"]
         out = StringIO.new
         $stderr = StringIO.new
-        lambda { ::BackupMan::CLI.execute( out, ARGV) }.should_not raise_error SystemExit
+        lambda { ::BackupMan::CLI.execute( out, argv) }.should_not raise_error SystemExit
         $stderr.string.should include("Log file is not writeable")
       end
             
