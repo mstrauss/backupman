@@ -19,7 +19,7 @@ module BackupMan
         lambda { ::BackupMan::CLI.execute( out, argv) }.should_not raise_error SystemExit
         $stderr.string.should include("Log file is not writeable")
       end
-            
+
     end
   end
 end

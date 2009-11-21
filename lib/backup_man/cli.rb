@@ -16,6 +16,7 @@ module BackupMan
 
       options = {
         :debug     => false,
+        :testing   => false,
         :logpath   => '/var/log/backup_man.log'
       }
       mandatory_options = %w(  )
@@ -37,6 +38,9 @@ module BackupMan
         }
         opts.on("-h", "--help",
                 "Show this help message.") { stdout.puts opts; exit }
+        opts.on("-t", "--test", "Testing mode.", "No actions will be performed. Just to test if the config parses fine." ) {
+          options[:testing] = true
+        }
         opts.parse!(arguments)
 
         if mandatory_options && mandatory_options.find { |option| options[option.to_sym].nil? }
@@ -45,6 +49,7 @@ module BackupMan
       end
 
       # doing our stuff here
+      BackupMan.instance.testing = options[:testing]
       
       # first we check if our logfile is writeable; if not, we give a warning
       logfile = Pathname.new( options[:logpath] )

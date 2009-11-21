@@ -7,7 +7,7 @@ module BackupMan
 
     include Singleton
     
-    attr_accessor :destdir, :ssh_app, :logfile, :lockdir
+    attr_accessor :destdir, :ssh_app, :logfile, :lockdir, :testing
 
     def initialize
       @backups = []

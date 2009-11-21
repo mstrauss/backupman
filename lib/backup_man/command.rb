@@ -38,7 +38,7 @@ module BackupMan
         lock
         begin
           Log.instance.info( "#{self}: Running.")
-          print `#{cmd}` unless TESTING
+          print `#{cmd}` unless BackupMan.instance.testing
         rescue Interrupt
           Log.instance.warn( "#{self}: Operation interrupted.")
           raise

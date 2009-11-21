@@ -14,5 +14,4 @@ def require_relative(relative_feature)
 end
 
 module BackupMan
-  TESTING = false
 end
