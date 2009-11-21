@@ -12,7 +12,8 @@ begin
     gem.authors = ["Markus Strauss"]
     gem.rubyforge_project = "backupman"
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency "yard", ">= 0"
+    gem.add_development_dependency "yard", ">= 0.4.0"
+    gem.add_development_dependency "cucumber", ">= 0.4.4"
     gem.add_dependency "log4r", ">= 1.1.2"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

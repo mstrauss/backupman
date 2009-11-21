@@ -97,7 +97,7 @@ module BackupMan
       throw "Hey. Cannot run just 'Backup'."
     end
 
-    # @returns [Array of Strings] of missing parameters
+    # @return [Array of Strings] of missing parameters
     def missing_required_parameters
       missing = []
       self.class.dsl_methods.each do |name, var, mandatory|      
