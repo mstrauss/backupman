@@ -1,7 +1,3 @@
-# Given /^the parameters "([^\"]*)" are present for "([^\"]*)" in "([^\"]*)"$/ do |parameters, task, configfile|
-#   parameters = parameters.split(",")
-#   # build_config_file( configfile, task, parameters )
-# end
 
 def defaults
   {
@@ -23,13 +19,12 @@ Given /^the parameters are "([^\"]*)"$/ do |parameters|
   @parameters = parameters.split(",").map{ |p| p.strip }
 end
 
-Given /^that goes into configuration file "([^\"]*)"$/ do |configfile|
+Given /^that goes into file "([^\"]*)"$/ do |configfile|
   f = File.open(configfile, "w") do |f|
     f.puts "#{@subject}.new('test') do |b|"
     @parameters.each { |par| f.puts "  b.#{par} #{defaults[par]}"}
     f.puts "end"
   end
-  # puts `cat configuration_file`
 end
 
 Then /^the result should be ok$/ do
