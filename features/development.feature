@@ -11,3 +11,8 @@ Feature: Development processes of BackupMan itself (rake tasks)
     Then folder "pkg" is created
     And file with name matching "pkg/*.gem" is created
     # And gem spec key "rdoc_options" contains /--mainREADME.rdoc/
+
+  Scenario: Test specs
+    Given this project is active project folder
+    When I invoke task "rake spec"
+    Then I should see all 2 examples pass
