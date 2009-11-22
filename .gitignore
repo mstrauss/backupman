@@ -20,4 +20,5 @@ pkg
 doc
 .yardoc
 *.gemspec
+tmp/
 ## PROJECT::SPECIFIC
