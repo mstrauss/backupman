@@ -4,7 +4,8 @@ Feature: The DSL supports various parameters
     Given the task is "<task>"
     And the parameters are "<parameters>"
     And that goes into configuration file "configuration_file"
-    When I start BackupMan with "-t configuration_file"
+    And this project is active project folder
+    When I run project executable "./bin/backup_man" with arguments "-t configuration_file"
     Then the result should be <result>
     
     Scenarios: full set, all parameters are provided and existent (valid)
