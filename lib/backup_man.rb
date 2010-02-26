@@ -14,5 +14,5 @@ def require_relative(relative_feature)
 end
 
 module BackupMan
-  ::Version = File.read('VERSION')    # used by optparse
+  ::Version = File.read( File.dirname(__FILE__) + '/../VERSION')    # used by optparse
 end
