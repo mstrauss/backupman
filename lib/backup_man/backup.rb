@@ -1,5 +1,6 @@
 require 'backup_man/backup_man'
 require 'backup_man/dsl'
+require 'fileutils'
 
 module BackupMan
 
