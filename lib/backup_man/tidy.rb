@@ -19,6 +19,10 @@ module BackupMan
     def_dsl_required :onlyif
 
     def_dsl :directory
+    
+    def_dsl :zero_byte_files
+    def_dsl :keep
+    def_dsl :dry_run
 
 
     def set_defaults
