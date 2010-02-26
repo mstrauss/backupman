@@ -49,6 +49,7 @@ Gem::Specification.new do |s|
      "lib/backup_man/mysql.rb",
      "lib/backup_man/rsync.rb",
      "lib/backup_man/tar.rb",
+     "lib/backup_man/tidy.rb",
      "spec/BackupMan_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb"
