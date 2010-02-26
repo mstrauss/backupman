@@ -93,7 +93,7 @@ module BackupMan
       # @param [Boolean] mandatory, true if this var is a required parameter
       def def_dsl( name, var = name, mandatory = false )
         class_eval( %Q{
-          def #{name}( #{var} )
+          def #{name}( #{var} = true )
             @#{var} = #{var}
           end
           })
