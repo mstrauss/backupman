@@ -20,8 +20,10 @@ module BackupMan
     end
     
     def _run
-      remote_cmd = "tar -c#{@options}f - ", @data_sources.join(" ")
-      Command.new("#{ssh_connect_cmd} #{remote_cmd} > '#{@backup_directory}/#{@filename}'").run
+      if super
+        remote_cmd = "tar -c#{@options}f - ", @data_sources.join(" ")
+        Command.new("#{ssh_connect_cmd} #{remote_cmd} > '#{@backup_directory}/#{@filename}'").run
+      end
     end
     
     # returns true if the backup already exists

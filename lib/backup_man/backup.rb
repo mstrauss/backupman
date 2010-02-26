@@ -45,78 +45,32 @@ module BackupMan
     # because the default values are not available at that time;
     def set_defaults
       @data_sources = [] unless @data_sources
-      @backup_directory = "#{BackupMan.instance.destdir}/#{@name}" unless @backup_directory
+      @backup_directory = Backup.make_default_backup_directory(@name) unless @backup_directory
       @onlyif = "true" if @onlyif.nil?
       @user = 'root' unless @user
       @host = @name unless @host
     end
-
-    # yields the block which comes from the DSL configuration file; also
-    # registers the new backup configuration with {BackupMan}
-    def initialize( name )
-      @name = name      
-      yield(self) if block_given?
-      BackupMan.instance.register_backup( self )
+    
+    # DRY method for creating the default backup directory. Also used for
+    # creating the default tidy directory.
+    def self.make_default_backup_directory( name )
+      "#{BackupMan.instance.destdir}/#{name}"
     end
-
-    # calling this actually runs the backup; DO NOT override this; override
-    # _run instead
-    def run
-      log_begin_of_run
-      set_defaults
-      debug_log_dsl_info
-      unless missing_required_parameters.empty?
-        Log.error( "#{self}: A required parameter is missing: #{missing_required_parameters.join ' '}")
-        return
-      end
-      onlyif = eval( @onlyif )
-      Log.debug( "onlyif = { #{@onlyif} } evaluates #{onlyif}" )
-      if onlyif
-        unless @backup_directory
-          Log.error( "#{self}: No backup directory. Don't know where to store all this stuff.")
-        else
-          FileUtils.mkdir_p @backup_directory
-          _run
-        end
-      else
-        Log.info( "#{self}: Preconditions for backup run not fulfilled.")
-      end
-      log_end_of_run
-    end
-
-    # @return [String]
-    def to_s
-      "#{self.class} #{self.name}"
-    end
-
 
 
     private
-
-    # @abstract override this to implement the actual backup commands
+    
     def _run
-      throw "Hey. Cannot run just 'Backup'."
-    end
-
-    # @return [Array of Strings] of missing parameters
-    def missing_required_parameters
-      missing = []
-      self.class.dsl_methods.each do |name, var, mandatory|      
-        missing << name if mandatory && self.instance_variable_get("@#{var}").empty?
+      # checking if we have the backup_directory      
+      unless @backup_directory
+        Log.error( "#{self}: No backup directory. Don't know where to store all this stuff.")
+        return false
+      else
+        FileUtils.mkdir_p @backup_directory
+        return true
       end
-      missing
     end
-
-    # not used acutally
-    def log_begin_of_run
-      Log.info( "Starting #{self.class} run for #{@name}." )
-    end
-
-    # simply logs that the program terminates
-    def log_end_of_run
-      Log.info( "Finished #{self.class} run for #{@name}." )
-    end
-
+    
     # @return [String] the ssh command string including user@host
     def ssh_connect_cmd
       "#{BackupMan.instance.ssh_app} #{@user}@#{@host}"  

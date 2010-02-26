@@ -17,8 +17,10 @@ module BackupMan
     end
 
     def _run
-      @data_sources.each do |dir|
-        Command.new("rsync #{@options} -e '#{BackupMan.instance.ssh_app}' '#{@user}@#{@host}:#{dir}' '#{@backup_directory}'").run
+      if super
+        @data_sources.each do |dir|
+          Command.new("rsync #{@options} -e '#{BackupMan.instance.ssh_app}' '#{@user}@#{@host}:#{dir}' '#{@backup_directory}'").run
+        end
       end
     end
 

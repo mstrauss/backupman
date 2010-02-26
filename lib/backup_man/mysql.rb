@@ -19,8 +19,10 @@ module BackupMan
     end
 
     def _run
-      remote_cmd = "mysqldump #{@options}"
-      Command.new("#{ssh_connect_cmd} '#{remote_cmd} | gzip' > '#{@backup_directory}/#{@filename}'").run
+      if super
+        remote_cmd = "mysqldump #{@options}"
+        Command.new("#{ssh_connect_cmd} '#{remote_cmd} | gzip' > '#{@backup_directory}/#{@filename}'").run
+      end
     end
 
     # returns true if the backup already exists
