@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     ".document",
      ".gitignore",
      ".yardopts",
+     "BackupMan.gemspec",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
