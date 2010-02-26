@@ -1,0 +1,6 @@
+Tidy.new("akeso.itstrauss.eu") do |tidy|
+  tidy.zero_byte_files
+  tidy.keep ["one per month", "older than 15 days"]
+  # tidy.rotation_scheme  'none'
+  tidy.dry_run          true
+end
