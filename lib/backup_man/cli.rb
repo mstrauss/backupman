@@ -6,7 +6,7 @@ require_relative 'log'
 require_relative 'tar'
 require_relative 'rsync'
 require_relative 'mysql'
-
+require_relative 'tidy'
 
 module BackupMan
   class CLI

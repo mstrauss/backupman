@@ -7,7 +7,8 @@ def defaults
     "user"   => "'user'",
     "host"   => "'host'",
     "filename" => "'filename'",
-    "options"  => "'options'"
+    "options"  => "'options'",
+    "directory" => "'directory'"
   }
 end
 
