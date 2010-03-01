@@ -14,8 +14,8 @@ module BackupMan
 
     def set_defaults
       super
-      @filename = "#{Date.today}-mysqlfull.sql.gz"
-      @options  = '--all-databases -u root'
+      @filename = "#{Date.today}-mysqlfull.sql.gz" unless @filename
+      @options  = '--all-databases -u root' unless @options
     end
 
     def _run

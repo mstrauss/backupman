@@ -15,8 +15,8 @@ module BackupMan
     
     def set_defaults
       super
-      @filename = "#{Date.today}-files.tgz"
-      @options  = "zP"
+      @filename = "#{Date.today}-files.tgz" unless @filename
+      @options  = "zP" unless @options
     end
     
     def _run

@@ -13,7 +13,7 @@ module BackupMan
     def set_defaults
       @backup_directory = "#{BackupMan.instance.destdir}/#{@name}/rsync" unless @backup_directory
       super
-      @options  = "-azR --delete"
+      @options  = "-azR --delete" unless @options
     end
 
     def _run
