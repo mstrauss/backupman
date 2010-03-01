@@ -37,7 +37,7 @@ module BackupMan
     def_dsl :backup, :data_sources
     def_dsl :to, :backup_directory, true
     def_dsl :user, :user, true
-    def_dsl :host, :user, true
+    def_dsl :host, :host, true
 
 
     # this method sets all the default values but does not overwrite existing
