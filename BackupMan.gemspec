@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{BackupMan}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Markus Strauss"]
-  s.date = %q{2010-02-26}
+  s.date = %q{2010-03-01}
   s.default_executable = %q{backup_man}
   s.description = %q{A tool for system administrators to easily configure pull-over-SSH backups. Install this gem on your backup server. Configure your backups definitions in /etc/backup_man and run backup_man from cron to securely pull your data over SSH.}
   s.email = %q{Markus@ITstrauss.eu}
@@ -49,7 +49,6 @@ Gem::Specification.new do |s|
      "lib/backup_man/mysql.rb",
      "lib/backup_man/rsync.rb",
      "lib/backup_man/tar.rb",
-     "lib/backup_man/tidy.rb",
      "spec/BackupMan_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb"
