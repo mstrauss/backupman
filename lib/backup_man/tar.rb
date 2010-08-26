@@ -20,7 +20,7 @@ module BackupMan
     end
     
     def _run
-      remote_cmd = "tar -c#{@options}f - ", @data_sources.join(" ")
+      remote_cmd = "tar -c#{@options}f - " + @data_sources.join(" ")
       Command.new("#{ssh_connect_cmd} #{remote_cmd} > '#{@backup_directory}/#{@filename}'").run
     end
     
