@@ -2,10 +2,11 @@ Feature: The DSL supports various parameters
   
   Scenario Outline: Presence of DSL parameters
     Given the task is "<task>"
+	And the constant "LOCKDIR" is "\"/tmp/locks\""
     And the parameters are "<parameters>"
     And that goes into file "tmp/configuration_file"
     And this project is active project folder
-    When I run project executable "./bin/backup_man" with arguments "-t tmp/configuration_file"
+    When I run project executable "./bin/backup_man" with arguments "-l tmp/logfile -t tmp/configuration_file"
     Then the result should be <result>
     
     Scenarios: full set, all parameters are provided and existent (valid)

@@ -19,8 +19,16 @@ Given /^the parameters are "([^\"]*)"$/ do |parameters|
   @parameters = parameters.split(",").map{ |p| p.strip }
 end
 
+Given /^the constant "([^\"]*)" is "([^\"]*)"$/ do |konst,value|
+  @constants ||= {}
+  @constants[konst] = value
+end
+
 Given /^that goes into file "([^\"]*)"$/ do |configfile|
   f = File.open(configfile, "w") do |f|
+    # constants first
+    @constants.each { |k,v| "#{k} = #{v}" }
+    # then the rest
     f.puts "#{@subject}.new('test') do |b|"
     @parameters.each { |par| f.puts "  b.#{par} #{defaults[par]}"}
     f.puts "end"
