@@ -15,13 +15,13 @@ module BackupMan
     
     def set_defaults
       super
-      @filename = "#{Date.today}-files.tgz"
-      @options  = "zP"
+      @filename = "#{Date.today}-files.tgz" unless @filename
+      @options  = "zP" unless @options
     end
     
     def _run
       if super
-        remote_cmd = "tar -c#{@options}f - ", @data_sources.join(" ")
+        remote_cmd = "tar -c#{@options}f - " + @data_sources.join(" ")
         Command.new("#{ssh_connect_cmd} #{remote_cmd} > '#{@backup_directory}/#{@filename}'").run
       end
     end
