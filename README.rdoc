@@ -1,6 +1,6 @@
 = BackupMan
 
-* Homepage: http://github.com/oowoo/backupman
+* Homepage: http://github.com/mstrauss/backupman
 
 == DESCRIPTION:
 
